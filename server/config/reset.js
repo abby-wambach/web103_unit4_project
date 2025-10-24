@@ -1,15 +1,11 @@
-import dotenv from 'dotenv'
 import { pool } from './database.js'
-import path from 'path'
-
-// Load environment variables from the correct path
-dotenv.config({ path: path.resolve('..', '.env') })
+import './dotenv.js'
 
 const createCarsTable = async () => {
     const createTableQuery = `
         DROP TABLE IF EXISTS cars;
 
-        CREATE TABLE cars (
+        CREATE TABLE IF NOT EXISTS cars (
             id SERIAL PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
             exterior_color VARCHAR(50) NOT NULL,
@@ -30,25 +26,37 @@ const createCarsTable = async () => {
 }
 
 const insertSampleData = async () => {
-    const insertDataQuery = `
-        INSERT INTO cars (name, exterior_color, roof, wheels, interior, price, convertible)
-        VALUES 
-            ('Lightning Bolt', 'red', 'black', 'sport', 'leather', 50000, false),
-            ('Thunder Strike', 'blue', 'white', 'racing', 'fabric', 45000, true),
-            ('Storm Chaser', 'black', 'red', 'alloy', 'leather', 55000, false);
-    `
-
-    try {
-        const res = await pool.query(insertDataQuery)
-        console.log('🎉 sample data inserted successfully')
-    } catch (err) {
-        console.error('⚠️ error inserting sample data', err)
-    }
-}
-
-const setup = async () => {
     await createCarsTable()
-    await insertSampleData()
+
+    const sampleCars = [
+        { name: 'Lightning Bolt', exterior_color: 'red', roof: 'black', wheels: 'sport', interior: 'leather', price: 50000, convertible: false },
+        { name: 'Thunder Strike', exterior_color: 'blue', roof: 'white', wheels: 'racing', interior: 'fabric', price: 45000, convertible: true },
+        { name: 'Storm Chaser', exterior_color: 'black', roof: 'red', wheels: 'alloy', interior: 'leather', price: 55000, convertible: false }
+    ]
+
+    sampleCars.forEach((car) => {
+        const insertQuery = {
+            text: 'INSERT INTO cars (name, exterior_color, roof, wheels, interior, price, convertible) VALUES ($1, $2, $3, $4, $5, $6, $7)'
+        }
+
+        const values = [
+            car.name,
+            car.exterior_color,
+            car.roof,
+            car.wheels,
+            car.interior,
+            car.price,
+            car.convertible
+        ]
+
+        pool.query(insertQuery, values, (err, res) => {
+            if (err) {
+                console.error('⚠️ error inserting car', err)
+                return
+            }
+            console.log(`✅ ${car.name} added successfully`)
+        })
+    })
 }
 
-setup()
+insertSampleData()
