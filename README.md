@@ -51,7 +51,7 @@ GIF created with ...  Kap
 
 ## Notes
 
-I just had absolutely no time at all to complete this project this week-- I had 3 midterm exams and on top of that major car troubles (ironic for this particular project lol). For the visual icon, I'm not sure if I completely implemented that requirement because I did it only for the exterior color, and it just changed the background color of the box where a little car icon was.
+I was going to come up with my own concept besides cars but I had absolutely no time at all to complete this project this week-- I had 3 midterm exams and on top of that major car troubles (ironic for this particular project lol). For the visual icon, I'm not sure if I completely implemented that requirement because I did it only for the exterior color, and it just changed the background color of the box where the little car icon is.
 
 ## License
 
